@@ -19,11 +19,19 @@ module CsvStepHelper
     match do |row|
       row["Name"] == widget.name
     end
+
+    failure_message do |row|
+      "Expected 'Name' column in row for #{widget.code.inspect} to be #{widget.name.inspect}, but got #{row["Name"].inspect}"
+    end
   end
 
   RSpec::Matchers.define :contain_price_of do |widget|
     match do |row|
       row["Price"] == widget.price
+    end
+
+    failure_message do |row|
+      "Expected 'Price' column in row for #{widget.code.inspect} to be #{widget.price.inspect}, but got #{row["Price"].inspect}"
     end
   end
 end
