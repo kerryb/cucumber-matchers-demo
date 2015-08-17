@@ -15,6 +15,6 @@ end
 Then "the CSV file contains information about my widgets" do
   csv = CSV.read @csv_path, headers: true
   expect(csv).to have_row_for(@widget_1).and have_row_for(@widget_2)
-  expect(row_for csv, @widget_1).to contain_name_of(@widget_1).and contain_price_of(@widget_1)
-  expect(row_for csv, @widget_2).to contain_name_of(@widget_2).and contain_price_of(@widget_2)
+  expect(row_for csv, @widget_1).to contain_data_for @widget_1
+  expect(row_for csv, @widget_2).to contain_data_for @widget_2
 end
