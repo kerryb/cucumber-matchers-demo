@@ -1,5 +1,5 @@
 require "widget"
-require "tempfile"
+require "widget_exporter"
 
 Given "some widgets" do
   @widget_1 = Widget.new "ABC123", "Left-handed screwdriver", 499
