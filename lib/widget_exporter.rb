@@ -1,7 +1,13 @@
 class WidgetExporter
-  def self.export_to path
-    CSV.open path, "wb", write_headers: true, headers: %w(Code Name Price)  do |csv|
-      csv << [nil, nil, nil]
+  def initialize path
+    @path = path
+  end
+
+  def export widgets
+    CSV.open @path, "wb", write_headers: true, headers: %w(Code Name Price)  do |csv|
+      widgets.each do |widget|
+        csv << [widget.code, nil, nil]
+      end
     end
   end
 end
