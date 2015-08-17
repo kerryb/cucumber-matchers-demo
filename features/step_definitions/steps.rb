@@ -13,6 +13,6 @@ When "I export them to CSV" do
 end
 
 Then "the CSV file contains information about my widgets" do
-  csv = CSV.read @csv_path
+  csv = CSV.read @csv_path, headers: true
   expect(csv).to have_row_for(@widget_1).and have_row_for(@widget_2)
 end

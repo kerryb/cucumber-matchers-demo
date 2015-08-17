@@ -3,6 +3,7 @@ require "rspec/matchers"
 module CsvStepHelper
   RSpec::Matchers.define :have_row_for do |widget|
     match do |csv|
+      csv.any? {|row| row["Code"] == widget.code }
     end
 
     failure_message do
