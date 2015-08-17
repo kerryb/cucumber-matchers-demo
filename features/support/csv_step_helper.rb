@@ -31,11 +31,11 @@ module CsvStepHelper
 
   RSpec::Matchers.define :contain_price_of do |widget|
     match do |row|
-      row["Price"] == widget.price
+      row["Price"] == widget.price.to_s
     end
 
     failure_message do |row|
-      "Expected 'Price' column in row for #{widget.code.inspect} to be #{widget.price.inspect}, but got #{row["Price"].inspect}"
+      "Expected 'Price' column in row for #{widget.code.inspect} to be #{widget.price.to_s.inspect}, but got #{row["Price"].inspect}"
     end
   end
 end
