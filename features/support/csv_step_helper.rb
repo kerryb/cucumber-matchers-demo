@@ -15,9 +15,15 @@ module CsvStepHelper
     end
   end
 
-  RSpec::Matchers.define :contain_data_for do |widget|
+  RSpec::Matchers.define :contain_name_of do |widget|
     match do |row|
-      row["Name"] == widget.name && row["Price"] == widget.price
+      row["Name"] == widget.name
+    end
+  end
+
+  RSpec::Matchers.define :contain_price_of do |widget|
+    match do |row|
+      row["Price"] == widget.price
     end
   end
 end
