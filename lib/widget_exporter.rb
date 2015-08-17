@@ -6,7 +6,7 @@ class WidgetExporter
   def export widgets
     CSV.open @path, "wb", write_headers: true, headers: %w(Code Name Price)  do |csv|
       widgets.each do |widget|
-        csv << [widget.code, nil, nil]
+        csv << [widget.code, widget.name, nil]
       end
     end
   end
