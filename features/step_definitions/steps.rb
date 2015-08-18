@@ -9,7 +9,7 @@ end
 
 When "I export them to CSV" do
   @csv_path = File.expand_path "../../tmp/widgets.csv", __dir__
-  WidgetExporter.new(@csv_path).export [@widget_1]
+  WidgetExporter.new(@csv_path).export [@widget_1, @widget_2]
 end
 
 Then "the CSV file contains information about my widgets" do
