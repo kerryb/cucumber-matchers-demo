@@ -34,7 +34,7 @@ Here&rsquo;s our first (and only) feature:
 ```gherkin
 Feature: Demonstration of composing expectations and custom matchers in Cucumber
 
-  Scenario: Stuff in a CSV file
+  Scenario: CSV export of widgets
     Given some widgets
     When I export them to CSV
     Then the CSV file contains information about my widgets
@@ -66,7 +66,7 @@ end
 
 When we run this, it fails because the `have_row_for` matcher doesn&rsquo;t exist:
 
-    Scenario: Stuff in a CSV file                             # features/demo.feature:3
+    Scenario: CSV export of widgets
       Given some widgets                                      # features/step_definitions/steps.rb:5
       When I export them to CSV                               # features/step_definitions/steps.rb:10
       Then the CSV file contains information about my widgets # features/step_definitions/steps.rb:15
@@ -94,7 +94,7 @@ World CsvStepHelper
 The `match` method is currently empty, which means it&rsquo;ll return nil (which is
 falsy) and the expectation will fail:
 
-    Scenario: Stuff in a CSV file                             # features/demo.feature:3
+    Scenario: CSV export of widgets
       Given some widgets                                      # features/step_definitions/steps.rb:5
       When I export them to CSV                               # features/step_definitions/steps.rb:10
       Then the CSV file contains information about my widgets # features/step_definitions/steps.rb:15
@@ -329,7 +329,7 @@ Here&rsquo;s the final code:
 ```gherkin
 Feature: Demonstration of composing expectations and custom matchers in Cucumber
 
-  Scenario: Stuff in a CSV file
+  Scenario: CSV export of widgets
     Given some widgets
     When I export them to CSV
     Then the CSV file contains information about my widgets
