@@ -9,12 +9,11 @@ end
 
 When "I export them to CSV" do
   @csv_path = File.expand_path "../../tmp/widgets.csv", __dir__
-  WidgetExporter.new(@csv_path).export [@widget_1, @widget_2]
+  WidgetExporter.new(@csv_path).export [@widget_1]
 end
 
 Then "the CSV file contains information about my widgets" do
   csv = CSV.read @csv_path, headers: true
-  expect(csv).to have_row_for(@widget_1).and have_row_for(@widget_2)
   expect(row_for csv, @widget_1).to contain_data_for @widget_1
   expect(row_for csv, @widget_2).to contain_data_for @widget_2
 end
