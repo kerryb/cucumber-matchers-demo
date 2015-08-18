@@ -1,17 +1,18 @@
 # Using compound expectations and custom matchers in Cucumber
 
-This project demonstrates the way I like to use RSpec matchers in Cucumber
-features. A lot of the time this would involve testing web applications with
-Capybara, but for simplicity this example uses a simple CSV exporter. The
-principles are exactly the same, but this way there are hopefully fewer
-irrelevant details.
+This project demonstrates the way I like to use [RSpec
+matchers](http://www.relishapp.com/rspec/rspec-expectations/v/3-3/docs) in
+[Cucumber](https://cucumber.io/) features. A lot of the time this would involve
+testing web applications with Capybara, but for simplicity this example uses a
+simple CSV exporter. The principles are exactly the same, but this way there
+are hopefully fewer irrelevant details.
 
 The specific problem I&rsquo;m trying to address is checking several aspects of
 expected behaviour at once (in this case it&rsquo;s the values in a row in the CSV
 file, but it could be parts of an HTML element, properties of a generated email
 message or anything else). I&rsquo;m aiming for a solution that:
 
-* checks several aspects at once, rather than having separate expectations
+* checks several parts of one thing at once, rather than having separate expectations
 * reports which individual checks failed, rather than an unhelpful all-or-nothing failure message
 * gives useful failure messages for each failed check
 
@@ -74,9 +75,11 @@ When we run this, it fails because the `have_row_for` matcher doesn&rsquo;t exis
         ./features/step_definitions/steps.rb:17:in `/^the\ CSV\ file\ contains\ information\ about\ my\ widgets$/'
         features/demo.feature:6:in `Then the CSV file contains information about my widgets'
 
+## Creating a custom matcher
+
 Let&rsquo;s implement a matcher in a file under `features/support`. We&rsquo;ll follow the
 normal convention of creating a module and mixing it into Cucumber&rsquo;s `World`,
-which would (if we had more modules) make it easier to find our methods in
+which would (if we had more modules) make it easier to find things in
 stack traces.
 
 ```ruby
@@ -102,13 +105,17 @@ falsy) and the expectation will fail:
         ./features/step_definitions/steps.rb:17:in `/^the\ CSV\ file\ contains\ information\ about\ my\ widgets$/'
         features/demo.feature:6:in `Then the CSV file contains information about my widgets'
 
-Note that as soon as the first expectation fails, the scenario stops executing
-&ndash; we don&rsquo;t get told that the second row is also missing. In unit tests I tend
-to try to stick to the &lsquo;one expectation per test&rsquo; rule, but in features it
-often makes sense to group several expectations into a single step, to keep
-unecessary details out of the scenario declaration.
+## Composing multiple matchers
 
-If we want to see both failures at once, we can use RSpec&rsquo;s [compound expectations](http://www.relishapp.com/rspec/rspec-expectations/v/3-3/docs/compound-expectations) to combine them with `and`:
+Note that as soon as the first expectation fails, the scenario stops executing
+&ndash; we don&rsquo;t get told that the second row is also missing.
+
+In unit tests I tend to try to stick to the &lsquo;one expectation per
+test&rsquo; rule, but in features it often makes sense to group several
+expectations into a single step, to keep unecessary details out of the scenario
+declaration. If we want to see both failures at once, we can use RSpec&rsquo;s
+[compound expectations](http://www.relishapp.com/rspec/rspec-expectations/v/3-3/docs/compound-expectations)
+to combine them with `and`:
 
 ```ruby
 Then "the CSV file contains information about my widgets" do
@@ -119,6 +126,8 @@ end
 
     Then the CSV file contains information about my widgets # features/step_definitions/steps.rb:15
       expected [] to have row for #<struct Widget code="ABC123", name="Left-handed screwdriver", price=499> and expected [] to have row for #<struct Widget code="DEF456", name="Tartan paint", price=1249> (RSpec::Expectations::ExpectationNotMetError)
+
+## Improving the failure messages
 
 OK, that works, but the failure message isn&rsquo;t great. If the CSV actually contained any data, it gets even worse (I haven&rsquo;t shown the code under test here, as it&rsquo;s not really relevant, but you can find it in `lib`). Here it is with just headers and a single empty row:
 
@@ -156,9 +165,9 @@ RSpec::Matchers.define :have_row_for do |widget|
 end
 ```
 
-Now if we arrange for the widget code (but not its name or price), the feature
-passes. We should probably test the rest of the row content too. Here&rsquo;s the
-expanded step definition:
+Now if we arrange for the widget code to be written to the CSV (but not its
+name or price), the feature passes. We should probably test the rest of the row
+content too. Here&rsquo;s the expanded step definition:
 
 ```ruby
 Then "the CSV file contains information about my widgets" do
@@ -200,6 +209,8 @@ helpful:
     Then the CSV file contains information about my widgets # features/step_definitions/steps.rb:15
       expected #<CSV::Row "Code":"ABC123" "Name":nil "Price":nil> to contain data for #<struct Widget code="ABC123", name="Left-handed screwdriver", price=499> (RSpec::Expectations::ExpectationNotMetError)
 
+## Composing matchers again
+
 By default the message just tells us that the expectation failed, not the specific things it was looking for or what it found instead. We&rsquo;ll fix that in a minute, but there&rsquo;s another problem too: because we&rsquo;re linking two separate assertions with `&&`, if the name&rsquo;s not found then it doesn&rsquo;t even check the price. Let&rsquo;s address that by using compound expectations again &ndash; as a side effect that will also make it easier to improve the messages.
 
 ```ruby
@@ -228,6 +239,8 @@ end
 This allows us to check both columns at once, but if anything, it makes the failure message even worse:
 
     expected #<CSV::Row "Code":"ABC123" "Name":nil "Price":nil> to contain name of #<struct Widget code="ABC123", name="Left-handed screwdriver", price=499> and expected #<CSV::Row "Code":"ABC123" "Name":nil "Price":nil> to contain price of #<struct Widget code="ABC123", name="Left-handed screwdriver", price=499> (RSpec::Expectations::ExpectationNotMetError)
+
+## Improving failure messages again
 
 Now we&rsquo;ve split the check into two separate matchers though, it&rsquo;s easy to make the messages more useful:
 
@@ -261,6 +274,8 @@ message just tells about the failed expectation:
 
     expected 'Price' column in row for "ABC123" to be 499, but got nil (RSpec::Expectations::ExpectationNotMetError)
 
+## Factoring out matcher composition
+
 We don&rsquo;t really want to have to repeat the detail of checking the two fields in
 the step definition though. Fortunately this is easy to fix &ndash; just
 extract the composition to a method, which itself acts as a matcher:
@@ -285,6 +300,8 @@ module CsvStepHelper
   # ...
 end
 ```
+
+# Eliminating a nasty nil
 
 The only thing left now is to remove those redundant checks for the existence
 of rows. The `have_row_for` matcher can be deleted, and the calls to it removed
