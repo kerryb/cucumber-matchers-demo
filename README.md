@@ -69,11 +69,12 @@ end
 When we run this, it fails because the `have_row_for` matcher doesn&rsquo;t exist:
 
     Scenario: CSV export of widgets
-      Given some widgets                                      # features/step_definitions/steps.rb:5
-      When I export them to CSV                               # features/step_definitions/steps.rb:10
-      Then the CSV file contains information about my widgets # features/step_definitions/steps.rb:15
+      Given some widgets                                      # step_definitions/steps.rb:5
+      When I export them to CSV                               # step_definitions/steps.rb:10
+      Then the CSV file contains information about my widgets # step_definitions/steps.rb:15
         expected [] to respond to `has_row_for?` (RSpec::Expectations::ExpectationNotMetError)
-        ./features/step_definitions/steps.rb:17:in `/^the\ CSV\ file\ contains\ information\ about\ my\ widgets$/'
+        ./features/step_definitions/steps.rb:17:in `/^the\ CSV\ file\ contains\ information\
+          about\ my\ widgets$/'
         features/demo.feature:6:in `Then the CSV file contains information about my widgets'
 
 ## Creating a custom matcher
@@ -99,11 +100,13 @@ The `match` method is currently empty, which means it&rsquo;ll return nil (which
 falsy) and the expectation will fail:
 
     Scenario: CSV export of widgets
-      Given some widgets                                      # features/step_definitions/steps.rb:5
-      When I export them to CSV                               # features/step_definitions/steps.rb:10
-      Then the CSV file contains information about my widgets # features/step_definitions/steps.rb:15
-        expected [] to have row for #<struct Widget code="ABC123", name="Left-handed screwdriver", price=499> (RSpec::Expectations::ExpectationNotMetError)
-        ./features/step_definitions/steps.rb:17:in `/^the\ CSV\ file\ contains\ information\ about\ my\ widgets$/'
+      Given some widgets                                      # step_definitions/steps.rb:5
+      When I export them to CSV                               # step_definitions/steps.rb:10
+      Then the CSV file contains information about my widgets # step_definitions/steps.rb:15
+        expected [] to have row for #<struct Widget code="ABC123", name="Left-handed
+          screwdriver", price=499> (RSpec::Expectations::ExpectationNotMetError)
+        ./features/step_definitions/steps.rb:17:in `/^the\ CSV\ file\ contains\ information\
+          about\ my\ widgets$/'
         features/demo.feature:6:in `Then the CSV file contains information about my widgets'
 
 ## Composing multiple matchers
@@ -125,8 +128,11 @@ Then "the CSV file contains information about my widgets" do
 end
 ```
 
-    Then the CSV file contains information about my widgets # features/step_definitions/steps.rb:15
-      expected [] to have row for #<struct Widget code="ABC123", name="Left-handed screwdriver", price=499> and expected [] to have row for #<struct Widget code="DEF456", name="Tartan paint", price=1249> (RSpec::Expectations::ExpectationNotMetError)
+    Then the CSV file contains information about my widgets # step_definitions/steps.rb:15
+      expected [] to have row for #<struct Widget code="ABC123", name="Left-handed
+        screwdriver", price=499> and expected [] to have row for #<struct Widget
+        code="DEF456", name="Tartan paint", price=1249>
+        (RSpec::Expectations::ExpectationNotMetError)
 
 ## Improving the failure messages
 
@@ -135,8 +141,12 @@ actually contains some data, it gets even worse (I haven&rsquo;t shown the code
 under test here, as it&rsquo;s not really relevant, but you can find it in
 `lib`). Here it is with just headers and a single empty row:
 
-    Then the CSV file contains information about my widgets # features/step_definitions/steps.rb:15
-      expected [["Code", "Name", "Price"], [nil, nil, nil]] to have row for #<struct Widget code="ABC123", name="Left-handed screwdriver", price=499> and expected [["Code", "Name", "Price"], [nil, nil, nil]] to have row for #<struct Widget code="DEF456", name="Tartan paint", price=1249> (RSpec::Expectations::ExpectationNotMetError)
+    Then the CSV file contains information about my widgets # step_definitions/steps.rb:15
+      expected [["Code", "Name", "Price"], [nil, nil, nil]] to have row for #<struct
+        Widget code="ABC123", name="Left-handed screwdriver", price=499> and expected
+        [["Code", "Name", "Price"], [nil, nil, nil]] to have row for #<struct Widget
+        code="DEF456", name="Tartan paint", price=1249>
+        (RSpec::Expectations::ExpectationNotMetError)
 
 Let&rsquo;s see what we can do about that.
 
@@ -151,7 +161,8 @@ RSpec::Matchers.define :have_row_for do |widget|
 end
 ```
 
-    expected CSV to have a row for the widget with code "ABC123" and expected CSV to have a row for the widget with code "DEF456" (RSpec::Expectations::ExpectationNotMetError)
+    expected CSV to have a row for the widget with code "ABC123" and expected CSV to have
+      a row for the widget with code "DEF456" (RSpec::Expectations::ExpectationNotMetError)
 
 Much better!
 
@@ -210,8 +221,10 @@ them later.
 This fails as expected, but once again the failure message could be more
 helpful:
 
-    Then the CSV file contains information about my widgets # features/step_definitions/steps.rb:15
-      expected #<CSV::Row "Code":"ABC123" "Name":nil "Price":nil> to contain data for #<struct Widget code="ABC123", name="Left-handed screwdriver", price=499> (RSpec::Expectations::ExpectationNotMetError)
+    Then the CSV file contains information about my widgets # step_definitions/steps.rb:15
+      expected #<CSV::Row "Code":"ABC123" "Name":nil "Price":nil> to contain data for
+        #<struct Widget code="ABC123", name="Left-handed screwdriver", price=499>
+        (RSpec::Expectations::ExpectationNotMetError)
 
 ## Composing matchers again
 
@@ -249,7 +262,11 @@ end
 This allows us to check both columns at once, but if anything, it makes the
 failure message even worse:
 
-    expected #<CSV::Row "Code":"ABC123" "Name":nil "Price":nil> to contain name of #<struct Widget code="ABC123", name="Left-handed screwdriver", price=499> and expected #<CSV::Row "Code":"ABC123" "Name":nil "Price":nil> to contain price of #<struct Widget code="ABC123", name="Left-handed screwdriver", price=499> (RSpec::Expectations::ExpectationNotMetError)
+    expected #<CSV::Row "Code":"ABC123" "Name":nil "Price":nil> to contain name of
+      #<struct Widget code="ABC123", name="Left-handed screwdriver", price=499> and
+      expected #<CSV::Row "Code":"ABC123" "Name":nil "Price":nil> to contain price
+      of #<struct Widget code="ABC123", name="Left-handed screwdriver", price=499>
+      (RSpec::Expectations::ExpectationNotMetError)
 
 ## Improving failure messages again
 
@@ -278,13 +295,16 @@ RSpec::Matchers.define :contain_price_of do |widget|
 end
 ```
 
-    expected 'Name' column in row for "ABC123" to be "Left-handed screwdriver", but got nil and expected 'Price' column in row for "ABC123" to be '499', but got nil (RSpec::Expectations::ExpectationNotMetError)
+    expected 'Name' column in row for "ABC123" to be "Left-handed screwdriver", but got nil and
+      expected 'Price' column in row for "ABC123" to be '499', but got nil
+      (RSpec::Expectations::ExpectationNotMetError)
 
 
 Now if we write the correct name to the CSV file, but not the price, the
 message just tells about the failed expectation:
 
-    expected 'Price' column in row for "ABC123" to be 499, but got nil (RSpec::Expectations::ExpectationNotMetError)
+    expected 'Price' column in row for "ABC123" to be 499, but got nil
+      (RSpec::Expectations::ExpectationNotMetError)
 
 ## Factoring out matcher composition
 
@@ -330,7 +350,7 @@ end
 If we force it to fail by not writing the second widget to the CSV file, the
 failure message is less than halpful:
 
-    Then the CSV file contains information about my widgets # features/step_definitions/steps.rb:15
+    Then the CSV file contains information about my widgets # step_definitions/steps.rb:15
       undefined method `[]' for nil:NilClass (NoMethodError)
       ./features/support/csv_step_helper.rb:14:in `block (2 levels) in <module:CsvStepHelper>'
 
@@ -339,11 +359,12 @@ people to trip over:
 
 ```ruby
 def row_for csv, widget
-  csv.find {|row| row["Code"] == widget.code } or fail "no row found in CSV for widget with code #{widget.code.inspect}"
+  csv.find {|row| row["Code"] == widget.code } or
+    fail "no row found in CSV for widget with code #{widget.code.inspect}"
 end
 ```
 
-    Then the CSV file contains information about my widgets # features/step_definitions/steps.rb:15
+    Then the CSV file contains information about my widgets # step_definitions/steps.rb:15
       no row found in CSV for widget with code "DEF456" (RuntimeError)
       ./features/support/csv_step_helper.rb:5:in `row_for'
 
