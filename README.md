@@ -445,3 +445,9 @@ module CsvStepHelper
 end
 World CsvStepHelper
 ```
+
+## What do you think?
+
+Does any of this make any sense? Do you have a better approach? Got any
+questions? Feel free to get in touch on Twitter
+([@kerryb](https://twitter.com/kerryb)).
