@@ -15,6 +15,7 @@ message or anything else). I&rsquo;m aiming for a solution that:
 * checks several parts of one thing at once, rather than having separate expectations
 * reports which individual checks failed, rather than an unhelpful all-or-nothing failure message
 * gives useful failure messages for each failed check
+* avoids too much clutter in the step definitions
 
 You can roughly follow the code through the stages described below by stepping through
 the commits, although it might not entirely match at some points.
@@ -112,7 +113,7 @@ Note that as soon as the first expectation fails, the scenario stops executing
 
 In unit tests I tend to try to stick to the &lsquo;one expectation per
 test&rsquo; rule, but in features it often makes sense to group several
-expectations into a single step, to keep unecessary details out of the scenario
+expectations into a single step, to keep unnecessary details out of the scenario
 declaration. If we want to see both failures at once, we can use RSpec&rsquo;s
 [compound expectations](http://www.relishapp.com/rspec/rspec-expectations/v/3-3/docs/compound-expectations)
 to combine them with `and`:
