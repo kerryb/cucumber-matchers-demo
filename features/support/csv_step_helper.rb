@@ -2,7 +2,7 @@ require "rspec/matchers"
 
 module CsvStepHelper
   def row_for csv, widget
-    csv.find {|row| row["Code"] == widget.code }
+    csv.find {|row| row["Code"] == widget.code } or fail "No row found in CSV for widget with code #{widget.code.inspect}"
   end
 
   def contain_data_for widget
