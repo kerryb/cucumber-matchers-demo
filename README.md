@@ -133,12 +133,12 @@ RSpec::Matchers.define :have_row_for do |widget|
   end
 
   failure_message do
-    "Expected CSV to have a row for the widget with code #{widget.code.inspect}"
+    "expected CSV to have a row for the widget with code #{widget.code.inspect}"
   end
 end
 ```
 
-    Expected CSV to have a row for the widget with code "ABC123" and Expected CSV to have a row for the widget with code "DEF456" (RSpec::Expectations::ExpectationNotMetError)
+    expected CSV to have a row for the widget with code "ABC123" and expected CSV to have a row for the widget with code "DEF456" (RSpec::Expectations::ExpectationNotMetError)
 
 Much better!
 
@@ -151,7 +151,7 @@ RSpec::Matchers.define :have_row_for do |widget|
   end
 
   failure_message do
-    "Expected CSV to have a row for the widget with code #{widget.code.inspect}"
+    "expected CSV to have a row for the widget with code #{widget.code.inspect}"
   end
 end
 ```
@@ -238,7 +238,7 @@ RSpec::Matchers.define :contain_name_of do |widget|
   end
 
   failure_message do |row|
-    "Expected 'Name' column in row for #{widget.code.inspect} to be #{widget.name.inspect}, but got #{row["Name"].inspect}"
+    "expected 'Name' column in row for #{widget.code.inspect} to be #{widget.name.inspect}, but got #{row["Name"].inspect}"
   end
 end
 
@@ -248,18 +248,18 @@ RSpec::Matchers.define :contain_price_of do |widget|
   end
 
   failure_message do |row|
-    "Expected 'Price' column in row for #{widget.code.inspect} to be #{widget.price.to_s.inspect}, but got #{row["Price"].inspect}"
+    "expected 'Price' column in row for #{widget.code.inspect} to be #{widget.price.to_s.inspect}, but got #{row["Price"].inspect}"
   end
 end
 ```
 
-    Expected 'Name' column in row for "ABC123" to be "Left-handed screwdriver", but got nil and Expected 'Price' column in row for "ABC123" to be '499', but got nil (RSpec::Expectations::ExpectationNotMetError)
+    expected 'Name' column in row for "ABC123" to be "Left-handed screwdriver", but got nil and expected 'Price' column in row for "ABC123" to be '499', but got nil (RSpec::Expectations::ExpectationNotMetError)
 
 
 Now if we write the correct name to the CSV file, but not the price, the
 message just tells about the failed expectation:
 
-    Expected 'Price' column in row for "ABC123" to be 499, but got nil (RSpec::Expectations::ExpectationNotMetError)
+    expected 'Price' column in row for "ABC123" to be 499, but got nil (RSpec::Expectations::ExpectationNotMetError)
 
 We don&rsquo;t really want to have to repeat the detail of checking the two fields in
 the step definition though. Fortunately this is easy to fix &ndash; just
@@ -310,12 +310,12 @@ people to trip over:
 
 ```ruby
 def row_for csv, widget
-  csv.find {|row| row["Code"] == widget.code } or fail "No row found in CSV for widget with code #{widget.code.inspect}"
+  csv.find {|row| row["Code"] == widget.code } or fail "no row found in CSV for widget with code #{widget.code.inspect}"
 end
 ```
 
     Then the CSV file contains information about my widgets # features/step_definitions/steps.rb:15
-      No row found in CSV for widget with code "DEF456" (RuntimeError)
+      no row found in CSV for widget with code "DEF456" (RuntimeError)
       ./features/support/csv_step_helper.rb:5:in `row_for'
 
 Much better!
@@ -366,7 +366,7 @@ require "rspec/matchers"
 
 module CsvStepHelper
   def row_for csv, widget
-    csv.find {|row| row["Code"] == widget.code } or fail "No row found in CSV for widget with code #{widget.code.inspect}"
+    csv.find {|row| row["Code"] == widget.code } or fail "no row found in CSV for widget with code #{widget.code.inspect}"
   end
 
   def contain_data_for widget
@@ -379,7 +379,7 @@ module CsvStepHelper
     end
 
     failure_message do |row|
-      "Expected 'Name' column in row for #{widget.code.inspect} to be #{widget.name.inspect}, but got #{row["Name"].inspect}"
+      "expected 'Name' column in row for #{widget.code.inspect} to be #{widget.name.inspect}, but got #{row["Name"].inspect}"
     end
   end
 
@@ -389,7 +389,7 @@ module CsvStepHelper
     end
 
     failure_message do |row|
-      "Expected 'Price' column in row for #{widget.code.inspect} to be #{widget.price.to_s.inspect}, but got #{row["Price"].inspect}"
+      "expected 'Price' column in row for #{widget.code.inspect} to be #{widget.price.to_s.inspect}, but got #{row["Price"].inspect}"
     end
   end
 end

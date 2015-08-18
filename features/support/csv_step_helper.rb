@@ -2,7 +2,7 @@ require "rspec/matchers"
 
 module CsvStepHelper
   def row_for csv, widget
-    csv.find {|row| row["Code"] == widget.code } or fail "No row found in CSV for widget with code #{widget.code.inspect}"
+    csv.find {|row| row["Code"] == widget.code } or fail "no row found in CSV for widget with code #{widget.code.inspect}"
   end
 
   def contain_data_for widget
@@ -15,7 +15,7 @@ module CsvStepHelper
     end
 
     failure_message do |row|
-      "Expected 'Name' column in row for #{widget.code.inspect} to be #{widget.name.inspect}, but got #{row["Name"].inspect}"
+      "expected 'Name' column in row for #{widget.code.inspect} to be #{widget.name.inspect}, but got #{row["Name"].inspect}"
     end
   end
 
@@ -25,7 +25,7 @@ module CsvStepHelper
     end
 
     failure_message do |row|
-      "Expected 'Price' column in row for #{widget.code.inspect} to be #{widget.price.to_s.inspect}, but got #{row["Price"].inspect}"
+      "expected 'Price' column in row for #{widget.code.inspect} to be #{widget.price.to_s.inspect}, but got #{row["Price"].inspect}"
     end
   end
 end
