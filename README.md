@@ -129,7 +129,10 @@ end
 
 ## Improving the failure messages
 
-OK, that works, but the failure message isn&rsquo;t great. If the CSV actually contained any data, it gets even worse (I haven&rsquo;t shown the code under test here, as it&rsquo;s not really relevant, but you can find it in `lib`). Here it is with just headers and a single empty row:
+OK, that works, but the failure message isn&rsquo;t great. When the CSV
+actually contains some data, it gets even worse (I haven&rsquo;t shown the code
+under test here, as it&rsquo;s not really relevant, but you can find it in
+`lib`). Here it is with just headers and a single empty row:
 
     Then the CSV file contains information about my widgets # features/step_definitions/steps.rb:15
       expected [["Code", "Name", "Price"], [nil, nil, nil]] to have row for #<struct Widget code="ABC123", name="Left-handed screwdriver", price=499> and expected [["Code", "Name", "Price"], [nil, nil, nil]] to have row for #<struct Widget code="DEF456", name="Tartan paint", price=1249> (RSpec::Expectations::ExpectationNotMetError)
@@ -211,7 +214,13 @@ helpful:
 
 ## Composing matchers again
 
-By default the message just tells us that the expectation failed, not the specific things it was looking for or what it found instead. We&rsquo;ll fix that in a minute, but there&rsquo;s another problem too: because we&rsquo;re linking two separate assertions with `&&`, if the name&rsquo;s not found then it doesn&rsquo;t even check the price. Let&rsquo;s address that by using compound expectations again &ndash; as a side effect that will also make it easier to improve the messages.
+By default the message just tells us that the expectation failed, not the
+specific things it was looking for or what it found instead. We&rsquo;ll fix
+that in a minute, but there&rsquo;s another problem too: because we&rsquo;re
+linking two separate assertions with `&&`, if the name&rsquo;s not found then
+it doesn&rsquo;t even check the price. Let&rsquo;s address that by using
+compound expectations again &ndash; as a side effect that will also make it
+easier to improve the messages.
 
 ```ruby
 Then "the CSV file contains information about my widgets" do
@@ -236,13 +245,15 @@ RSpec::Matchers.define :contain_price_of do |widget|
 end
 ```
 
-This allows us to check both columns at once, but if anything, it makes the failure message even worse:
+This allows us to check both columns at once, but if anything, it makes the
+failure message even worse:
 
     expected #<CSV::Row "Code":"ABC123" "Name":nil "Price":nil> to contain name of #<struct Widget code="ABC123", name="Left-handed screwdriver", price=499> and expected #<CSV::Row "Code":"ABC123" "Name":nil "Price":nil> to contain price of #<struct Widget code="ABC123", name="Left-handed screwdriver", price=499> (RSpec::Expectations::ExpectationNotMetError)
 
 ## Improving failure messages again
 
-Now we&rsquo;ve split the check into two separate matchers though, it&rsquo;s easy to make the messages more useful:
+Now we&rsquo;ve split the check into two separate matchers though, it&rsquo;s
+easy to make the messages more useful:
 
 ```ruby
 RSpec::Matchers.define :contain_name_of do |widget|
