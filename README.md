@@ -27,7 +27,7 @@ the commits, although it might not entirely match at some points.
 * [Use compound expectations](http://www.relishapp.com/rspec/rspec-expectations/v/3-3/docs/compound-expectations) to check several related things
 * Encapsulate matcher composition in a method, which will itself act like a matcher
 
-## Let&rsquo;s get started! 
+## Let&rsquo;s get started! 
 
 The only gems I&rsquo;m using explicitly are `cucumber` (2.0.2) and `rspec-expectations` (3.3.1).
 
@@ -109,7 +109,7 @@ falsy) and the expectation will fail:
           about\ my\ widgets$/'
         features/demo.feature:6:in `Then the CSV file contains information about my widgets'
 
-## Composing multiple matchers
+## Composing multiple matchers
 
 Note that as soon as the first expectation fails, the scenario stops executing
 &ndash; we don&rsquo;t get told that the second row is also missing.
@@ -226,7 +226,7 @@ helpful:
         #<struct Widget code="ABC123", name="Left-handed screwdriver", price=499>
         (RSpec::Expectations::ExpectationNotMetError)
 
-## Composing matchers again
+## Composing matchers again
 
 By default the message just tells us that the expectation failed, not the
 specific things it was looking for or what it found instead. We&rsquo;ll fix
@@ -268,7 +268,7 @@ failure message even worse:
       of #<struct Widget code="ABC123", name="Left-handed screwdriver", price=499>
       (RSpec::Expectations::ExpectationNotMetError)
 
-## Improving failure messages again
+## Improving failure messages again
 
 Now we&rsquo;ve split the check into two separate matchers though, it&rsquo;s
 easy to make the messages more useful:
@@ -306,7 +306,7 @@ message just tells about the failed expectation:
     expected 'Price' column in row for "ABC123" to be 499, but got nil
       (RSpec::Expectations::ExpectationNotMetError)
 
-## Factoring out matcher composition
+## Factoring out matcher composition
 
 We don&rsquo;t really want to have to repeat the detail of checking the two fields in
 the step definition though. Fortunately this is easy to fix &ndash; just
@@ -333,7 +333,7 @@ module CsvStepHelper
 end
 ```
 
-# Eliminating a nasty nil
+# Eliminating a nasty nil
 
 The only thing left now is to remove those redundant checks for the existence
 of rows. The `have_row_for` matcher can be deleted, and the calls to it removed
